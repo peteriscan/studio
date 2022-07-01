@@ -3,7 +3,6 @@ import { gql } from 'graphql-request';
 
 import { APP_TOOLKIT, IAppToolkit } from '~app-toolkit/app-toolkit.interface';
 import { BLOCKS_PER_DAY } from '~app-toolkit/constants/blocks';
-import { Cache } from '~cache/cache.decorator';
 import { Network } from '~types/network.interface';
 
 type GetPoolsResponse = {
@@ -94,14 +93,14 @@ type BalancerV2TheGraphPoolTokenDataStrategyParams = {
 export class BalancerV2TheGraphPoolTokenDataStrategy {
   constructor(@Inject(APP_TOOLKIT) private readonly appToolkit: IAppToolkit) {}
 
-  @Cache({
+  /*@Cache({
     instance: 'business',
     key: (subgraphUrl: string) => {
       const [namespace, name] = subgraphUrl.split('/').slice(-2);
       return `studio:balancer-v2-fork:pool-token-addresses:${namespace}:${name}`;
     },
-    ttl: 5 * 60,
-  })
+    ttl: 1,
+  })*/
   async getPoolAddresses(
     subgraphUrl: string,
     minLiquidity: number,
@@ -135,7 +134,8 @@ export class BalancerV2TheGraphPoolTokenDataStrategy {
     return currentPoolsResponse.pools.map(pool => {
       const pastPool = pastPoolsResponse.pools.find(p => p.address === pool.address);
       const volume = pastPool ? Number(pool.totalSwapVolume) - Number(pastPool.totalSwapVolume) : 0;
-      return { address: pool.address, volume };
+      const poolType = pool.poolType;
+      return { address: pool.address, volume, poolType };
     });
   }
 

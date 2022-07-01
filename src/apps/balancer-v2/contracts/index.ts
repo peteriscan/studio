@@ -10,6 +10,7 @@ import { BalancerGauge__factory } from './ethers';
 import { BalancerMerkleOrchard__factory } from './ethers';
 import { BalancerMerkleRedeem__factory } from './ethers';
 import { BalancerPool__factory } from './ethers';
+import { BalancerStablePhantomPool__factory } from './ethers';
 import { BalancerVault__factory } from './ethers';
 import { BalancerVeBal__factory } from './ethers';
 import { BalancerWrappedAave__factory } from './ethers';
@@ -41,6 +42,9 @@ export class BalancerV2ContractFactory extends ContractFactory {
   balancerPool({ address, network }: ContractOpts) {
     return BalancerPool__factory.connect(address, this.appToolkit.getNetworkProvider(network));
   }
+  balancerStablePhantomPool({ address, network }: ContractOpts) {
+    return BalancerStablePhantomPool__factory.connect(address, this.appToolkit.getNetworkProvider(network));
+  }
   balancerVault({ address, network }: ContractOpts) {
     return BalancerVault__factory.connect(address, this.appToolkit.getNetworkProvider(network));
   }
@@ -58,6 +62,7 @@ export type { BalancerGauge } from './ethers';
 export type { BalancerMerkleOrchard } from './ethers';
 export type { BalancerMerkleRedeem } from './ethers';
 export type { BalancerPool } from './ethers';
+export type { BalancerStablePhantomPool } from './ethers';
 export type { BalancerVault } from './ethers';
 export type { BalancerVeBal } from './ethers';
 export type { BalancerWrappedAave } from './ethers';

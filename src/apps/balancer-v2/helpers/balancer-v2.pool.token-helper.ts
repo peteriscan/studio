@@ -35,7 +35,7 @@ type GetBalancerV2PoolTokensParams = {
   resolvePoolTokenAddresses: (opts: {
     appId: string;
     network: Network;
-  }) => Promise<{ address: string; volume: number }[]>;
+  }) => Promise<{ address: string; volume: number; poolType: string }[]>;
   resolvePoolLabelStrategy?: () => BalancerV2PoolLabelStrategy;
 };
 
@@ -63,9 +63,9 @@ export class BalancerV2PoolTokensHelper {
     const vaultContract = this.contractFactory.balancerVault({ network, address: vaultAddress });
 
     const pools = await Promise.all(
-      poolTokenData.map(async ({ address, volume }) => {
-        const type = ContractType.APP_TOKEN;
+      poolTokenData.map(async ({ address, volume, poolType }) => {
         const poolContract = this.contractFactory.balancerPool({ network, address });
+        const stablePhantomPoolContract = this.contractFactory.balancerStablePhantomPool({ network, address });
         const poolId = await multicall.wrap(poolContract).getPoolId();
 
         // Resolve underlying tokens
@@ -74,19 +74,22 @@ export class BalancerV2PoolTokensHelper {
         const tokensRaw = tokenAddresses.map(tokenAddress => {
           const baseToken = prices.find(price => price.address === tokenAddress);
           const appToken = appTokens.find(p => p.address === tokenAddress);
+
           return appToken ?? baseToken;
         });
 
-        if (tokensRaw.some(isUndefined)) return null;
-        const tokens = _.compact(tokensRaw);
+        // Some balancer pool have bb-a-usd which can have a circular dependency
+        const tokensFiltered = tokensRaw.filter(x => x?.address != address);
+
+        if (tokensFiltered.some(isUndefined)) return null;
+        const tokens = _.compact(tokensFiltered);
 
         const reserves = tokens.map((t, i) => Number(poolTokensRaw.balances[i]) / 10 ** t.decimals);
         const liquidity = tokens.reduce((acc, v, i) => acc + v.price * reserves[i], 0);
         if (liquidity < minLiquidity) return null;
 
-        const [decimals, supplyRaw, symbol, feeRaw, weightsRaw] = await Promise.all([
+        const [decimals, symbol, feeRaw, weightsRaw] = await Promise.all([
           multicall.wrap(poolContract).decimals(),
-          multicall.wrap(poolContract).totalSupply(),
           multicall.wrap(poolContract).symbol(),
           multicall
             .wrap(poolContract)
@@ -97,6 +100,12 @@ export class BalancerV2PoolTokensHelper {
             .getNormalizedWeights()
             .catch(() => []),
         ]);
+
+        const supplyRaw =
+          poolType != 'StablePhantom'
+            ? await multicall.wrap(poolContract).totalSupply()
+            : await multicall.wrap(stablePhantomPoolContract).getVirtualSupply();
+
         // Data Props
         const supply = Number(supplyRaw) / 10 ** decimals;
         const fee = Number(feeRaw) / 10 ** 18;
@@ -117,7 +126,7 @@ export class BalancerV2PoolTokensHelper {
         const images = tokens.map(v => getTokenImg(v.address, network));
 
         const token: AppTokenPosition<BalancerV2PoolTokenDataProps> = {
-          type,
+          type: ContractType.APP_TOKEN,
           address,
           network,
           appId,
