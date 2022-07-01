@@ -8,9 +8,11 @@ import { ArbitrumBalancerV2StakedfContractPositionFetcher } from './arbitrum/bal
 import BALANCER_V2_DEFINITION, { BalancerV2AppDefinition } from './balancer-v2.definition';
 import { BalancerV2ContractFactory } from './contracts';
 import { EthereumBalancerV2BalanceFetcher } from './ethereum/balancer-v2.balance-fetcher';
+import { EthereumBalancerV2BoostedAaveTokenFetcher } from './ethereum/balancer-v2.boosted-aave.token-fetcher';
 import { EthereumBalancerV2PoolTokenFetcher } from './ethereum/balancer-v2.pool.token-fetcher';
 import { EthereumBalancerV2StakedfContractPositionFetcher } from './ethereum/balancer-v2.staked.contract-position-fetcher';
 import { EthereumBalancerV2VotingEscrowContractPositionFetcher } from './ethereum/balancer-v2.voting-escrow.contract-position-fetcher';
+import { EthereumBalancerV2WrappedAaveTokenFetcher } from './ethereum/balancer-v2.wrapped-aave.token-fetcher';
 import { BalancerV2CacheManager } from './helpers/balancer-v2.cache-manager';
 import { BalancerV2ClaimableContractPositionBalanceHelper } from './helpers/balancer-v2.claimable.contract-position-balance-helper';
 import { BalancerV2EventsPoolTokenDataStrategy } from './helpers/balancer-v2.events.pool-token-address-strategy';
@@ -38,6 +40,8 @@ import { PolygonBalancerV2StakedfContractPositionFetcher } from './polygon/balan
     EthereumBalancerV2PoolTokenFetcher,
     EthereumBalancerV2VotingEscrowContractPositionFetcher,
     EthereumBalancerV2StakedfContractPositionFetcher,
+    EthereumBalancerV2WrappedAaveTokenFetcher,
+    EthereumBalancerV2BoostedAaveTokenFetcher,
     // Polygon
     PolygonBalancerV2BalanceFetcher,
     PolygonBalancerV2PoolTokenFetcher,

@@ -4,6 +4,7 @@ import { IAppToolkit, APP_TOOLKIT } from '~app-toolkit/app-toolkit.interface';
 import { ContractFactory } from '~contract/contracts';
 import { Network } from '~types/network.interface';
 
+import { BalancerBoostedAave__factory } from './ethers';
 import { BalancerChildChainGaugeFactory__factory } from './ethers';
 import { BalancerGauge__factory } from './ethers';
 import { BalancerMerkleOrchard__factory } from './ethers';
@@ -11,6 +12,7 @@ import { BalancerMerkleRedeem__factory } from './ethers';
 import { BalancerPool__factory } from './ethers';
 import { BalancerVault__factory } from './ethers';
 import { BalancerVeBal__factory } from './ethers';
+import { BalancerWrappedAave__factory } from './ethers';
 
 // eslint-disable-next-line
 type ContractOpts = { address: string; network: Network };
@@ -21,6 +23,9 @@ export class BalancerV2ContractFactory extends ContractFactory {
     super((network: Network) => appToolkit.getNetworkProvider(network));
   }
 
+  balancerBoostedAave({ address, network }: ContractOpts) {
+    return BalancerBoostedAave__factory.connect(address, this.appToolkit.getNetworkProvider(network));
+  }
   balancerChildChainGaugeFactory({ address, network }: ContractOpts) {
     return BalancerChildChainGaugeFactory__factory.connect(address, this.appToolkit.getNetworkProvider(network));
   }
@@ -42,8 +47,12 @@ export class BalancerV2ContractFactory extends ContractFactory {
   balancerVeBal({ address, network }: ContractOpts) {
     return BalancerVeBal__factory.connect(address, this.appToolkit.getNetworkProvider(network));
   }
+  balancerWrappedAave({ address, network }: ContractOpts) {
+    return BalancerWrappedAave__factory.connect(address, this.appToolkit.getNetworkProvider(network));
+  }
 }
 
+export type { BalancerBoostedAave } from './ethers';
 export type { BalancerChildChainGaugeFactory } from './ethers';
 export type { BalancerGauge } from './ethers';
 export type { BalancerMerkleOrchard } from './ethers';
@@ -51,3 +60,4 @@ export type { BalancerMerkleRedeem } from './ethers';
 export type { BalancerPool } from './ethers';
 export type { BalancerVault } from './ethers';
 export type { BalancerVeBal } from './ethers';
+export type { BalancerWrappedAave } from './ethers';

@@ -17,6 +17,8 @@ export const BALANCER_V2_DEFINITION = appDefinition({
   },
   groups: {
     pool: { id: 'pool', type: GroupType.TOKEN, label: 'Pools' },
+    boostedAave: { id: 'boosted-aave', type: GroupType.TOKEN, label: 'Boosted Aave' },
+    wrappedAave: { id: 'wrapped-aave', type: GroupType.TOKEN, label: 'Wrapped Aave', isHiddenFromExplore: true },
     farm: { id: 'farm', type: GroupType.POSITION, label: 'Staked', groupLabel: 'Farms' },
     votingEscrow: { id: 'voting-escrow', type: GroupType.POSITION, label: 'Voting Escrow' },
     claimable: { id: 'claimable', type: GroupType.POSITION, label: 'Claimable' },
